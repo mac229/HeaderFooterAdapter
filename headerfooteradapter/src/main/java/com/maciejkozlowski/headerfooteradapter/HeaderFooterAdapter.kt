@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : RecyclerView.Adapter<VH>>(
-        internal val innerAdapter: T
+    val innerAdapter: T
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
