@@ -1,4 +1,4 @@
-package com.maciejkozlowski.multiviewadapter
+package com.maciejkozlowski.headerfooteradapter
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
