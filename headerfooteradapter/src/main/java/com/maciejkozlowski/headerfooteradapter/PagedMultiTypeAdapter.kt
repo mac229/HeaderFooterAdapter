@@ -36,7 +36,7 @@ abstract class PagedMultiTypeAdapter<ITEM>(
     override fun submitList(pagedList: PagedList<ITEM>?) {
         super.submitList(pagedList)
         if (pagedList == null) {
-            multiTypeAdapter.items.clear()
+            multiTypeAdapter.items = emptyList<ITEM>()
         } else {
             multiTypeAdapter.items = pagedList
         }
