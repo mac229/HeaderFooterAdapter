@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
-abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : RecyclerView.Adapter<VH>>(
+abstract class HeaderFooterAdapter<out T : RecyclerView.Adapter<RecyclerView.ViewHolder>>(
     val innerAdapter: T
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -18,8 +18,8 @@ abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : Recycle
         private const val TYPE_FOOTER = 7899
     }
 
-    private val headers = ArrayList<View>()
-    private val footers = ArrayList<View>()
+    private val headers = mutableListOf<View>()
+    private val footers = mutableListOf<View>()
 
     private var orientation: Int? = null
 
@@ -49,7 +49,7 @@ abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : Recycle
         when {
             isHeader(position) -> bindHeader(position, holder)
             isFooter(position) -> bindFooter(position, holder)
-            else               -> innerAdapter.onBindViewHolder(holder.cast(), position - headers.size, payloads)
+            else               -> innerAdapter.onBindViewHolder(holder, position - headers.size, payloads)
         }
     }
 
@@ -57,7 +57,7 @@ abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : Recycle
         when {
             isHeader(position) -> bindHeader(position, holder)
             isFooter(position) -> bindFooter(position, holder)
-            else               -> innerAdapter.onBindViewHolder(holder.cast(), position - headers.size)
+            else               -> innerAdapter.onBindViewHolder(holder, position - headers.size)
         }
     }
 
@@ -123,7 +123,7 @@ abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : Recycle
         if (holder is HeaderFooterViewHolder) {
             super.onViewRecycled(holder)
         } else {
-            innerAdapter.onViewRecycled(holder.cast())
+            innerAdapter.onViewRecycled(holder)
         }
     }
 
@@ -131,7 +131,7 @@ abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : Recycle
         return if (holder is HeaderFooterViewHolder) {
             super.onFailedToRecycleView(holder)
         } else {
-            innerAdapter.onFailedToRecycleView(holder.cast())
+            innerAdapter.onFailedToRecycleView(holder)
         }
     }
 
@@ -143,7 +143,7 @@ abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : Recycle
                 params.isFullSpan = true
             }
         } else {
-            innerAdapter.onViewAttachedToWindow(holder.cast())
+            innerAdapter.onViewAttachedToWindow(holder)
         }
     }
 
@@ -151,7 +151,7 @@ abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : Recycle
         if (holder is HeaderFooterViewHolder) {
             super.onViewDetachedFromWindow(holder)
         } else {
-            innerAdapter.onViewDetachedFromWindow(holder.cast())
+            innerAdapter.onViewDetachedFromWindow(holder)
         }
     }
 
@@ -221,12 +221,6 @@ abstract class HeaderFooterAdapter<VH : RecyclerView.ViewHolder, out T : Recycle
         val size = headers.size
         headers.clear()
         notifyItemRangeRemoved(0, size)
-
-    }
-
-    @Suppress("unchecked_cast")
-    private fun RecyclerView.ViewHolder.cast(): VH {
-        return this as VH
     }
 
     internal fun getAdapterPosition(positionOfInternalAdapter: Int): Int {
